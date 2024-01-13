@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssuntoController;
 use App\Http\Controllers\AutorController;
+use App\Http\Controllers\LivroController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,5 +29,12 @@ Route::delete('autores/{id}', [AutorController::class, 'destroy']);
 
 Route::get('assuntos', [AssuntoController::class, 'index']);
 Route::post('assuntos', [AssuntoController::class, 'store']);
+Route::get('assuntos/{assunto}', [AssuntoController::class, 'get']);
 Route::patch('assuntos/{assunto}', [AssuntoController::class, 'update']);
 Route::delete('assuntos/{id}', [AssuntoController::class, 'destroy']);
+
+Route::get('livros', [LivroController::class, 'index']);
+Route::post('livros', [LivroController::class, 'store']);
+Route::get('livros/{livro}', [LivroController::class, 'get']);
+Route::patch('livros/{livro}', [LivroController::class, 'update']);
+Route::delete('livros/{id}', [LivroController::class, 'destroy']);

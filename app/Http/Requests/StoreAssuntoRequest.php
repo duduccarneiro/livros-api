@@ -11,7 +11,7 @@ class StoreAssuntoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class StoreAssuntoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'Descricao' => 'required|max:40'
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        if($this->descricao) {
+            $this->merge(['Descricao' => $this->descricao]);
+        }
     }
 }

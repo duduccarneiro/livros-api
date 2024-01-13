@@ -11,7 +11,7 @@ class StoreAutorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class StoreAutorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'Nome' => 'required|max:40'
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        if($this->nome) {
+            $this->merge(['Nome' => $this->nome]);
+        }
     }
 }

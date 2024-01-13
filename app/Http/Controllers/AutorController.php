@@ -18,9 +18,6 @@ class AutorController extends Controller
      */
     public function index(Request $request)
     {
-        // $autores = Autor::paginate();
-        // return new AutorCollection($autores);
-
         $filter = new AutorFilter();
         $queryItems = $filter->transform($request);
 
@@ -50,7 +47,7 @@ class AutorController extends Controller
      */
     public function store(StoreAutorRequest $request)
     {
-        //
+        return new AutorResource( Autor::create($request->all()));
     }
 
     /**
@@ -66,23 +63,10 @@ class AutorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Autor $autor)
+    public function destroy($id)
     {
-        try {
-            return $autor->delete();
-        } catch (\Exception $e) {
-            echo "Está errado desde sempre";
-        }
+        $autor = Autor::findOrFail($id);
 
-        // try {
-        //     $deleteUser = User::whereId($id)->delete();
-
-        //     // You could use User::destroy($id); .. I guess
-        //     // Be careful, I don't think delete method returns the actual deleted user
-
-        // } catch (\Illuminate\Database\QueryException $e) {
-        //     // Not sure about namespaces
-        //     // Do things... (check error code for example)
-        // }
+        return $autor->delete();
     }
 }

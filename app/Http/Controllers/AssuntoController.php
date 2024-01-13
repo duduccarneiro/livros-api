@@ -2,26 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assunto;
+use App\Filters\AssuntoFilter;
 use App\Http\Requests\StoreAssuntoRequest;
 use App\Http\Requests\UpdateAssuntoRequest;
-use App\Models\Assunto;
+use App\Http\Resources\AssuntoCollection;
+use App\Http\Resources\AssuntoResource;
+use Illuminate\Http\Request;
 
 class AssuntoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $filter = new AssuntoFilter();
+        $queryItems = $filter->transform($request);
+
+        $assuntosQuery = Assunto::where($queryItems);
+
+        $filter->addSort($request, $assuntosQuery);
+
+        if( $request->has('size') ){
+            $assuntos = $assuntosQuery->paginate($request->input('size'));
+        }else {
+            $assuntos = $assuntosQuery->get();
+        }
+
+        return new AssuntoCollection($assuntos);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      */
-    public function create()
+    public function get(Request $request, Assunto $assunto)
     {
-        //
+        return new AssuntoResource($assunto);
     }
 
     /**
@@ -29,23 +46,7 @@ class AssuntoController extends Controller
      */
     public function store(StoreAssuntoRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Assunto $assunto)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Assunto $assunto)
-    {
-        //
+        return new AssuntoResource( Assunto::create($request->all()));
     }
 
     /**
@@ -53,14 +54,18 @@ class AssuntoController extends Controller
      */
     public function update(UpdateAssuntoRequest $request, Assunto $assunto)
     {
-        //
+        $assunto->update($request->all());
+
+        return new AssuntoResource( $assunto );
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Assunto $assunto)
+    public function destroy($id)
     {
-        //
+        $assunto = Assunto::findOrFail($id);
+
+        return $assunto->delete();
     }
 }
