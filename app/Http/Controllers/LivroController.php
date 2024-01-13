@@ -2,27 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Livro;
+use App\Filters\LivroFilter;
 use App\Http\Requests\StoreLivroRequest;
 use App\Http\Requests\UpdateLivroRequest;
-use App\Models\Livro;
+use App\Http\Resources\LivroCollection;
+use App\Http\Resources\LivroResource;
+use Illuminate\Http\Request;
 
 class LivroController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        echo('Index dos livros');
+        $filter = new LivroFilter();
+        $queryItems = $filter->transform($request);
+
+        $livrosQuery = Livro::where($queryItems);
+
+        $filter->addSort($request, $livrosQuery);
+
+        if( $request->has('size') ){
+            $livros = $livrosQuery->paginate($request->input('size'));
+        }else {
+            $livros = $livrosQuery->get();
+        }
+
+        return new LivroCollection($livros);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      */
-    public function create()
+    public function get(Request $request, Livro $livro)
     {
-        // echo('Create dos livros');
-        return view('livros.create');
+        return new LivroResource($livro);
     }
 
     /**
@@ -30,23 +46,7 @@ class LivroController extends Controller
      */
     public function store(StoreLivroRequest $request)
     {
-        echo('Store dos livros');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Livro $livro)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Livro $livro)
-    {
-        //
+        return new LivroResource( Livro::create($request->all()));
     }
 
     /**
@@ -54,14 +54,18 @@ class LivroController extends Controller
      */
     public function update(UpdateLivroRequest $request, Livro $livro)
     {
-        //
+        $livro->update($request->all());
+
+        return new LivroResource( $livro );
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Livro $livro)
+    public function destroy($id)
     {
-        //
+        $livro = Livro::findOrFail($id);
+
+        return $livro->delete();
     }
 }
