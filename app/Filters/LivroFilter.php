@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class LivroFilter extends ApiFilter {
 
     protected $safeParams = [
-        'codl' => ['eq', 'like'],
+        'codL' => ['eq', 'like'],
         'titulo' => ['eq', 'like'],
         'editora' => ['eq', 'like'],
         'edicao' => ['eq', 'like'],
@@ -15,7 +15,7 @@ class LivroFilter extends ApiFilter {
     ];
 
     protected $columnMap = [
-        'codl' => 'Codl',
+        'codL' => 'Codl',
         'titulo' => 'Titulo',
         'editora' => 'Editora',
         'edicao' => 'Edicao',

@@ -11,7 +11,7 @@ class StoreLivroRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,30 @@ class StoreLivroRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'Titulo' => 'required|max:40',
+            'Editora' => 'required|max:40',
+            'Edicao' => 'required|integer',
+            'AnoPublicacao' => 'required|max:4',
+            'Valor' => 'required|decimal:2'
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        if($this->titulo) {
+            $this->merge(['Titulo' => $this->titulo]);
+        }
+        if($this->editora) {
+            $this->merge(['Editora' => $this->editora]);
+        }
+        if($this->edicao) {
+            $this->merge(['Edicao' => $this->edicao]);
+        }
+        if($this->anoPublicacao) {
+            $this->merge(['AnoPublicacao' => $this->anoPublicacao]);
+        }
+        if($this->valor) {
+            $this->merge(['Valor' => $this->valor]);
+        }
     }
 }

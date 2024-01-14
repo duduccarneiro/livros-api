@@ -17,7 +17,7 @@ class Livro extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['Titulo', 'Editora', 'Edicao', 'AnoPublicacao'];
+    protected $fillable = ['Titulo', 'Editora', 'Edicao', 'AnoPublicacao', 'Valor'];
 
     public function autores() {
         return $this->belongsToMany(Autor::class, 'Livro_Autor', 'Livro_Codl', 'Autor_CodAu');

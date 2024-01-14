@@ -15,11 +15,14 @@ class LivroResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'codl' => $this->Codl,
+            'codL' => $this->Codl,
             'titulo' => $this->Titulo,
             'editora' => $this->Editora,
             'edicao' => $this->Edicao,
             'anoPublicacao' => $this->AnoPublicacao,
+            'valor' => $this->Valor,
+            'autores' => AutorResource::collection($this->whenLoaded('autores')),
+            'assuntos' => AssuntoResource::collection($this->whenLoaded('assuntos')),
         ];
     }
 }

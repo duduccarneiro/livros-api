@@ -36,8 +36,10 @@ class LivroController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function get(Request $request, Livro $livro)
+    public function get(Request $request, $codl)
     {
+        $livro = Livro::where('Codl', $codl)->with(['autores', 'assuntos'])->firstOrFail();
+        
         return new LivroResource($livro);
     }
 
@@ -46,7 +48,17 @@ class LivroController extends Controller
      */
     public function store(StoreLivroRequest $request)
     {
-        return new LivroResource( Livro::create($request->all()));
+        $livro = Livro::create($request->all());
+
+        if($request->has('autores')){
+            $livro->autores()->sync($request->input('autores'));
+        }
+
+        if($request->has('assuntos')){
+            $livro->assuntos()->sync($request->input('assuntos'));
+        }
+
+        return new LivroResource($livro);
     }
 
     /**
@@ -55,6 +67,14 @@ class LivroController extends Controller
     public function update(UpdateLivroRequest $request, Livro $livro)
     {
         $livro->update($request->all());
+
+        if($request->has('autores')){
+            $livro->autores()->sync($request->input('autores'));
+        }
+
+        if($request->has('assuntos')){
+            $livro->assuntos()->sync($request->input('assuntos'));
+        }
 
         return new LivroResource( $livro );
     }
