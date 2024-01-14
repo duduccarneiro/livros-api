@@ -35,6 +35,7 @@ Route::delete('assuntos/{id}', [AssuntoController::class, 'destroy']);
 
 Route::get('livros', [LivroController::class, 'index']);
 Route::post('livros', [LivroController::class, 'store']);
+Route::get('livros/relatorio', [LivroController::class, 'getRelatorioLivrosPorAutor']);
 Route::get('livros/{livro}', [LivroController::class, 'get']);
 Route::patch('livros/{livro}', [LivroController::class, 'update']);
 Route::delete('livros/{id}', [LivroController::class, 'destroy']);

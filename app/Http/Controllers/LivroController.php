@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateLivroRequest;
 use App\Http\Resources\LivroCollection;
 use App\Http\Resources\LivroResource;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LivroController extends Controller
 {
@@ -87,5 +88,40 @@ class LivroController extends Controller
         $livro = Livro::findOrFail($id);
 
         return $livro->delete();
+    }
+
+    public function getRelatorioLivrosPorAutor() {
+        $results = \DB::select('SELECT * FROM view_livros_por_autor');
+
+        $autorAtual = "";
+        $livroAtual = "";
+        $assuntosAtring = "";
+        $autores = [];
+        foreach($results as $item) {
+            if(strcmp($autorAtual, $item->Nome ) != 0){
+                $autorAtual = $item->Nome;
+                $livroAtual = -1;
+                $autores[$item->CodAu] = ['Nome' => $item->Nome, 'Livros' => []];
+            }
+            if($livroAtual != $item->Codl){
+                $livroAtual = $item->Codl;
+                if($item->Codl) {
+                    $autores[$item->CodAu]['Livros'][$item->Codl] = [
+                        'Titulo' => $item->Titulo, 
+                        'Editora' => $item->Editora, 
+                        'Edicao' => $item->Edicao,
+                        'AnoPublicacao' => $item->AnoPublicacao,
+                        'Valor' => $item->Valor, 
+                        'Assuntos' => []
+                    ];
+                }
+            }
+            if($item->CodAs) {
+                $autores[$item->CodAu]['Livros'][$item->Codl]['Assuntos'][] = $item->Descricao;
+            }
+        }
+        $pdf = Pdf::loadView('livros.livrosPorAutorReport', ["autores" => $autores]);
+        //return $pdf->stream();
+        return $pdf->download('livros.pdf');
     }
 }
