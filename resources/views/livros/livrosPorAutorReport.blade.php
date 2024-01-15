@@ -123,15 +123,20 @@
 
 		<div class="livros-box">
 			<table>
+                @if( count($autores) == 0 )
+                    <tr>
+						<td colspan="2">Nenhum autor encontrado</td>
+					</tr>
+                @endif
                 @foreach ($autores as $autor)
 					<tr class="heading">
 						@if ( count($autor['Livros']) )
 							<td>Autor: {{ $autor['Nome'] }}</td>
-						@else
-							<td>Autor: {{ $autor['Nome'] }} - Não possui livros cadastrados</td>
-						@endif
 
-						<td>Valor</td>
+                            <td>Valor</td>
+						@else
+							<td  colspan="2">Autor: {{ $autor['Nome'] }} - Não possui livros cadastrados</td>
+						@endif
 					</tr>
 					@foreach ($autor['Livros'] as $livro)
 						@php($assuntos = '')
