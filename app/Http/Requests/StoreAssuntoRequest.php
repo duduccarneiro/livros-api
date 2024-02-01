@@ -22,7 +22,7 @@ class StoreAssuntoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Descricao' => 'required|max:40'
+            'Descricao' => 'required|max:20'
         ];
     }
 
